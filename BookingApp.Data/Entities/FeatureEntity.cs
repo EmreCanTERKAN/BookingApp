@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
 
 namespace BookingApp.Data.Entities
 {
@@ -13,5 +10,13 @@ namespace BookingApp.Data.Entities
         // Relational Property
 
         public ICollection<HotelFeatureEntity> HotelFeatures { get; set; }
+    }
+
+    public class FeatureConfiguration : BaseConfiguration<FeatureEntity>
+    {
+        public override void Configure(EntityTypeBuilder<FeatureEntity> builder)
+        {
+            base.Configure(builder);
+        }
     }
 }
