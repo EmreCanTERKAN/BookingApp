@@ -17,7 +17,7 @@ namespace BookingApp.Data.Repositories
         private readonly BookingAppDbContext _dbContext;
         private readonly DbSet<TEntity> _dbSet;
 
-        public Repository(BookingAppDbContext dbContext, DbSet<TEntity> dbSet)
+        public Repository(BookingAppDbContext dbContext)
         {
             _dbContext = dbContext;
             _dbSet = _dbContext.Set<TEntity>();

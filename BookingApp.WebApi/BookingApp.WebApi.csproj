@@ -18,8 +18,4 @@
     <ProjectReference Include="..\BookingApp.Business\BookingApp.Business.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>
