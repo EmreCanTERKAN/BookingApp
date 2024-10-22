@@ -1,4 +1,6 @@
 using BookingApp.Data.Context;
+using BookingApp.Data.Repositories;
+using BookingApp.Data.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +15,8 @@ builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration.GetConnectionString("default");
 
 builder.Services.AddDbContext<BookingAppDbContext>(options => options.UseSqlServer(connectionString));
-
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>)); // Generic olduðu için typeof
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
