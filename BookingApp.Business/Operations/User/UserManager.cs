@@ -2,6 +2,7 @@
 using BookingApp.Business.Operations.User.Dtos;
 using BookingApp.Business.Types;
 using BookingApp.Data.Entities;
+using BookingApp.Data.Enums;
 using BookingApp.Data.Repositories;
 using BookingApp.Data.UnitOfWork;
 
@@ -40,6 +41,7 @@ namespace BookingApp.Business.Operations.User
                 LastName = user.LastName,
                 Password = _dataProtector.Protect(user.Password),
                 BirthDate = user.BirthDate,
+                UserType = UserType.Customer
 
             };
 
@@ -59,6 +61,49 @@ namespace BookingApp.Business.Operations.User
                 IsSucceed= true,
                 Message = "Kullanıcı başarıyla oluşturuldu."
             };
+
+        }
+
+        public async Task<ServiceMessage<UserInfoDto>> LoginUser(LoginUserDto user)
+        {
+            var userEntity =  _userRepository.Get(x => x.Email.ToLower() == user.Email.ToLower());
+
+            if (userEntity is null)
+            {
+                return new ServiceMessage<UserInfoDto>
+                {
+                    IsSucceed = false,
+                    Message = "Bu emaile ait kayıt bulunamadı."
+                };
+            }
+
+            var unprotectedText = _dataProtector.UnProtect(userEntity.Password);
+
+            if (unprotectedText == user.Password)
+            {
+                return new ServiceMessage<UserInfoDto>
+                {
+                    IsSucceed = true,
+                    Data = new UserInfoDto
+                    {
+                        Email = userEntity.Email,
+                        Id = userEntity.Id,
+                        FirstName = userEntity.FirstName,
+                        LastName = userEntity.LastName,
+                        UserType = userEntity.UserType,
+                    }
+                };
+            }
+            else
+            {
+                return new ServiceMessage<UserInfoDto>
+                {
+                    IsSucceed = false,
+                    Message = "Kullanıcı adı veya şifre hatalı"
+                };
+
+            }
+
 
         }
     }

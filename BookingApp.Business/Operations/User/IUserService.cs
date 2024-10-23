@@ -1,10 +1,5 @@
 ﻿using BookingApp.Business.Operations.User.Dtos;
 using BookingApp.Business.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BookingApp.Business.Operations.User
 {
@@ -12,5 +7,6 @@ namespace BookingApp.Business.Operations.User
     {
         Task<ServiceMessage> AddUser(AddUserDto user); // async çünkü unit of work pattern
 
+        Task<ServiceMessage<UserInfoDto>> LoginUser(LoginUserDto user);
     }
 }
