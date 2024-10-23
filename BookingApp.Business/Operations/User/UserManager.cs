@@ -1,13 +1,9 @@
-﻿using BookingApp.Business.Operations.User.Dtos;
+﻿using BookingApp.Business.DataProtection;
+using BookingApp.Business.Operations.User.Dtos;
 using BookingApp.Business.Types;
 using BookingApp.Data.Entities;
 using BookingApp.Data.Repositories;
 using BookingApp.Data.UnitOfWork;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BookingApp.Business.Operations.User
 {
@@ -15,32 +11,34 @@ namespace BookingApp.Business.Operations.User
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IRepository<UserEntity> _userRepository;
+        private readonly IDataProtection _dataProtector;
 
-        public UserManager(IUnitOfWork unitOfWork, IRepository<UserEntity> userRepository)
+        public UserManager(IUnitOfWork unitOfWork, IRepository<UserEntity> userRepository, IDataProtection dataProtector)
         {
             _unitOfWork = unitOfWork;
             _userRepository = userRepository;
+            _dataProtector = dataProtector;
         }
         
         public async Task<ServiceMessage> AddUser(AddUserDto user)
         {
             var hasMail = _userRepository.GetAll(x => x.Email.ToLower() == user.Email.ToLower());
 
-            if (hasMail is not null)
+            if (hasMail.Any())
             {
                 return new ServiceMessage
                 {
                     IsSucceed = false,
-                    Message = "Kullanıcı mevcut, lütfen başka bir email deneyiniz."
+                    Message = "Email mevcut, lütfen başka bir email deneyiniz."
                 };
             }
 
-            var userEntity = new UserEntity
+            var userEntity = new UserEntity 
             {
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Password = user.Password, // şifreleme yapılacak
+                Password = _dataProtector.Protect(user.Password),
                 BirthDate = user.BirthDate,
 
             };

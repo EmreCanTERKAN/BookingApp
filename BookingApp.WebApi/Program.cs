@@ -1,7 +1,9 @@
+using BookingApp.Business.DataProtection;
 using BookingApp.Business.Operations.User;
 using BookingApp.Data.Context;
 using BookingApp.Data.Repositories;
 using BookingApp.Data.UnitOfWork;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +15,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IDataProtection, DataProctection>();
+var keysDirectory = new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, "App_Data", "Keys"));
+builder.Services.AddDataProtection()
+    .SetApplicationName("BookingApp")
+    .PersistKeysToFileSystem(keysDirectory);
+
+
+
+
 var connectionString = builder.Configuration.GetConnectionString("default");
 
 builder.Services.AddDbContext<BookingAppDbContext>(options => options.UseSqlServer(connectionString));
@@ -20,6 +31,7 @@ builder.Services.AddDbContext<BookingAppDbContext>(options => options.UseSqlServ
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>)); // Generic olduðu için typeof
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserService, UserManager>();
+
 
 var app = builder.Build();
 
