@@ -207,5 +207,76 @@ namespace BookingApp.Business.Operations.Hotel
 
             return hotel;
         }
+
+        public async Task<ServiceMessage> UpdateHotel(UpdateHotelDto hotel)
+        {
+            var hotelEntity = _hotelRepository.GetById(hotel.Id);
+
+            if (hotelEntity is null)
+            {
+                return new ServiceMessage
+                {
+                    IsSucceed = false,
+                    Message = "Otel Bulunamadı."
+                };
+            }
+
+            await _unitOfWork.BeginTransaction();
+
+            hotelEntity.Name = hotel.Name;
+            hotelEntity.Stars = hotel.Stars;
+            hotelEntity.Location = hotel.Location;
+            hotelEntity.AccomodationType = hotel.AccomodationType;
+
+            _hotelRepository.Update(hotelEntity);
+
+            try
+            {
+               await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                await _unitOfWork.RollBackTransaction();
+                throw new Exception("Bir hatayla karşılaşıldı");
+            }
+
+            var hotelFeatures = _hotelFeatureRepository.GetAll(x => x.HotelId == hotel.Id).ToList();
+
+            foreach (var hotelFeature in hotelFeatures)
+            {
+                _hotelFeatureRepository.Delete(hotelFeature, false); // HARD DELETE
+            }
+
+            foreach (var featureId in hotel.FeatureIds)
+            {
+                var hotelFeature = new HotelFeatureEntity
+                {
+                    HotelId = hotelEntity.Id,
+                    FeatureId = featureId
+                };
+
+                _hotelFeatureRepository.Add(hotelFeature);
+            }
+
+            try
+            {
+                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.CommitTransaction();
+            }
+            catch (Exception)
+            {
+
+                await _unitOfWork.RollBackTransaction();    
+                throw new Exception("Bir hata oluştu,sistem geriye dönüyor.");
+            }
+
+            return new ServiceMessage
+            {
+                IsSucceed = true,
+                Message = "İşlem başarılı."
+            };
+
+
+        }
     }
 }

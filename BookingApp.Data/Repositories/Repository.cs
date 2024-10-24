@@ -32,15 +32,19 @@ namespace BookingApp.Data.Repositories
           //  _dbContext.SaveChanges();
         }
 
-        public void Delete(TEntity entity)
+        public void Delete(TEntity entity, bool softDelete = true)
         {
-            //soft delete ile beraber bir modifiye etmek olduğu için işlem olan tarihi kaydediyoruz.
-            entity.ModifiedDate = DateTime.Now;
-            entity.IsDeleted = true;
-            _dbSet.Update(entity);
-
-
-           // _dbContext.SaveChanges();
+            if (softDelete)
+            {
+                entity.ModifiedDate = DateTime.Now;
+                entity.IsDeleted = true;
+                _dbSet.Update(entity);
+            }
+            else
+            {
+                _dbSet.Remove(entity);
+            }
+            
         }
 
         public void Delete(int id)

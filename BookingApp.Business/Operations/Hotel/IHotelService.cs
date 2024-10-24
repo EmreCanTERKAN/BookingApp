@@ -14,5 +14,7 @@ namespace BookingApp.Business.Operations.Hotel
         Task<ServiceMessage> AdjustHotelStars(int id, int changeBy);
 
         Task<ServiceMessage> DeleteHotel(int id);
+
+        Task<ServiceMessage> UpdateHotel(UpdateHotelDto hotel);
     }
 }
