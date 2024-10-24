@@ -11,5 +11,9 @@ namespace BookingApp.Business.Operations.Hotel
     public interface IHotelService
     {
         Task<ServiceMessage> AddHotel(AddHotelDto hotel);
+
+        Task<HotelDto> GetHotel(int id);
+
+        Task<List<HotelDto>> GetAllHotels();
     }
 }

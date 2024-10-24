@@ -19,6 +19,28 @@ namespace BookingApp.WebApi.Controllers
             _hotelService = hotelService;
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetHotel(int id)
+        {
+            var hotel = await _hotelService.GetHotel(id);
+
+            if (hotel is null)
+            {
+                return NotFound();
+            }
+            return Ok(hotel);
+
+        }
+
+        [HttpGet("GetAllHotel")]
+        public async Task<IActionResult> GetHotels()
+        {
+            var hotels = await _hotelService.GetAllHotels();
+                
+
+                return Ok(hotels);
+        }
+
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
@@ -34,7 +56,7 @@ namespace BookingApp.WebApi.Controllers
                 FeatureIds = request.FeatureIds,
             };
 
-           var result =  await _hotelService.AddHotel(hotelDto);
+            var result = await _hotelService.AddHotel(hotelDto);
 
             if (!result.IsSucceed)
             {
