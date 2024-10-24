@@ -1,5 +1,6 @@
 using BookingApp.Business.DataProtection;
 using BookingApp.Business.Operations.Feature;
+using BookingApp.Business.Operations.Hotel;
 using BookingApp.Business.Operations.User;
 using BookingApp.Data.Context;
 using BookingApp.Data.Repositories;
@@ -81,7 +82,7 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>)); // Gene
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserService, UserManager>();
 builder.Services.AddScoped<IFeatureService, FeatureManager>();
-
+builder.Services.AddScoped<IHotelService, HotelManager>();
 
 var app = builder.Build();
 
