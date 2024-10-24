@@ -1,4 +1,5 @@
 using BookingApp.Business.DataProtection;
+using BookingApp.Business.Operations.Feature;
 using BookingApp.Business.Operations.User;
 using BookingApp.Data.Context;
 using BookingApp.Data.Repositories;
@@ -17,6 +18,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+
 builder.Services.AddSwaggerGen(options =>
 {
     var jwtSecurityScheme = new OpenApiSecurityScheme
@@ -77,6 +80,7 @@ builder.Services.AddDbContext<BookingAppDbContext>(options => options.UseSqlServ
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>)); // Generic olduðu için typeof
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserService, UserManager>();
+builder.Services.AddScoped<IFeatureService, FeatureManager>();
 
 
 var app = builder.Build();
