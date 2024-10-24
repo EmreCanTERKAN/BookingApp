@@ -1,9 +1,7 @@
-﻿
-using BookingApp.Business.Operations.Hotel;
+﻿using BookingApp.Business.Operations.Hotel;
 using BookingApp.Business.Operations.Hotel.Dtos;
 using BookingApp.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingApp.WebApi.Controllers
@@ -66,7 +64,35 @@ namespace BookingApp.WebApi.Controllers
             {
                 return Ok();
             }
+        }
 
+        [HttpPatch("{id}/stars")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AdjustHotelStars(int id , int changeBy)
+        {
+            var result = await _hotelService.AdjustHotelStars(id, changeBy);
+
+            if (!result.IsSucceed)
+            {
+                return NotFound();
+            }
+            else
+                return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteHotel(int id)
+        {
+            var result = await _hotelService.DeleteHotel(id);
+            if (!result.IsSucceed)
+            {
+                return BadRequest(result.Message);
+            }
+            else
+            {
+                return Ok("Kayıt Başarıyla Silinmiştir");
+            }
 
         }
 

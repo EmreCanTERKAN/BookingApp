@@ -97,6 +97,76 @@ namespace BookingApp.Business.Operations.Hotel
 
         }
 
+        public async Task<ServiceMessage> AdjustHotelStars(int id, int changeBy)
+        {
+            var hotel = _hotelRepository.GetById(id);
+
+            if (hotel is null)
+            {
+                return new ServiceMessage
+                {
+                    IsSucceed = false,
+                    Message = "Hotel Bulunamadı"
+                };
+            }
+            hotel.Stars = changeBy;
+
+            _hotelRepository.Update(hotel);
+
+            try
+            {
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw new Exception("Bir hata oluştu");
+            }
+
+            return new ServiceMessage
+            {
+                IsSucceed = true
+            };
+
+
+        }
+
+        public async Task<ServiceMessage> DeleteHotel(int id)
+        {
+            var hotel = _hotelRepository.GetById(id);
+
+            if (hotel is null)
+            {
+                return new ServiceMessage
+                {
+                    IsSucceed = false,
+                    Message = $"{id} id'li hotel bulunamadı. "
+                };
+            }
+
+            _hotelRepository.Delete(id);
+
+            try
+            {
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw new Exception("Silinme sırasında bir hata oluşturuldu.");
+            }
+
+            return new ServiceMessage
+            {
+                IsSucceed = true,
+                Message = "Kayıt başarıyla silinmiştir"
+
+            };
+
+
+
+
+        }
+
         public async Task<List<HotelDto>> GetAllHotels()
         {
             var hotels = await _hotelRepository.GetAll()
