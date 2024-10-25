@@ -21,6 +21,13 @@ namespace BookingApp.Business.Operations.Setting
             _settingRepository = settingRepository;
         }
 
+        public bool GetMaintenanceState()
+        {
+            var maintenenceState = _settingRepository.GetById(1).MaintenenceMode;
+
+            return maintenenceState;
+        }
+
         public async Task ToggleMaintenence()
         {
             var setting = _settingRepository.GetById(1);
