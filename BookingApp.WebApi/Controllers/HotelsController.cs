@@ -114,7 +114,7 @@ namespace BookingApp.WebApi.Controllers
 
             var result = await _hotelService.UpdateHotel(updateHotelDto);
 
-            if (result.IsSucceed)
+            if (!result.IsSucceed)
             {
                 return NotFound(result.Message);
             }

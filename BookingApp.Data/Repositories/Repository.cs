@@ -27,9 +27,6 @@ namespace BookingApp.Data.Repositories
         {
             entity.CreatedDate = DateTime.Now;
             _dbSet.Add(entity);
-
-
-          //  _dbContext.SaveChanges();
         }
 
         public void Delete(TEntity entity, bool softDelete = true)
@@ -43,16 +40,13 @@ namespace BookingApp.Data.Repositories
             else
             {
                 _dbSet.Remove(entity);
-            }
-            
+            }           
         }
 
         public void Delete(int id)
         {
             var entity = _dbSet.Find(id);
             Delete(entity);
-
-
         }
 
         public TEntity Get(Expression<Func<TEntity, bool>> predicate)
